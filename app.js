@@ -1,4 +1,5 @@
-var app = require('express')();
+var express = require('express');
+var app = express();
 var server = require('http').Server(app)
 var io = require('socket.io')(server);
 var i2c = require('i2c');
@@ -19,11 +20,11 @@ var getPosition = function(pCallback){
                         cCallback(val / 16384.0);
                 };
                 wire.readBytes(adr, 8, function(err, res) {
-                        high = res.readUInt8(0);
+			high = res.readUInt8(0);
                         if(high && low) byteCal();
                 });
                 wire.readBytes(adr+1, 8, function(err, res) {
-                        low = res.readUInt8(0);
+			low = res.readUInt8(0);
                         if(high && low) byteCal();
                 });
         };
@@ -60,6 +61,7 @@ var getPosition = function(pCallback){
 };
 
 app.listen(3000);
+app.use(express.static(__dirname + '/public'));
 
 app.get('/', function(req, res){
     res.sendfile(__dirname + '/public/index.html');
@@ -68,7 +70,7 @@ app.get('/', function(req, res){
 wire.writeByte(0x6b, function(err){
 	setInterval(function(){
 		getPosition(function(pPos){
-			io.on('connection', function (socket) {
+			io.of('/xy').on('connection', function (socket) {
 				socket.emit('passXY', pPos);
 			});
 		});

@@ -6,7 +6,7 @@
   "dependencies": {
     "i2c": "~0.1.6",
     "express": "~4.10.4",
-    "socket.io": "^1.2.1"
+    "socket.io": "~1.2.1"
   },
   "devDependencies": {},
   "scripts": {
